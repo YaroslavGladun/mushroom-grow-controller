@@ -1,0 +1,31 @@
+# Мінімальна прошивка для перевірки роботи ESP32-WROOM-32 (DevKit V1).
+# Блимає вбудованим світлодіодом (GPIO2) і пише лог у серійний порт.
+# Wi-Fi не потрібен — це лише тест ланцюжка компіляція → прошивка → запуск.
+#
+# GPIO2 — strapping-пін (для реальних навантажень НЕ використовувати, див. CLAUDE.md).
+# Тут допустимо, бо це вбудований LED і одноразовий тест.
+
+esphome:
+  name: blink-test
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+logger:
+  level: DEBUG   # DEBUG, щоб було видно періодичні повідомлення logger.log нижче
+
+output:
+  - platform: gpio
+    pin: GPIO2
+    id: onboard_led
+
+interval:
+  - interval: 1s
+    then:
+      - output.turn_on: onboard_led
+      - logger.log: "LED увімкнено — ESP32 працює"
+      - delay: 500ms
+      - output.turn_off: onboard_led
+      - delay: 500ms
